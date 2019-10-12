@@ -1,0 +1,4 @@
+#TYPE           IO      COMPUTATION		SW-OVERHEAD
+ARM				181.32	416.63			
+Interleaving	181.32	379.44			
+HW              176.87	32.54

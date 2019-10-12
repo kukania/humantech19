@@ -1,0 +1,34 @@
+
+ === benchmark configuration ===
+DB module: KVS
+random seed: 337129904
+filename: ./dummy# (use existing DB file)
+# documents (i.e. working set size): 134217728
+# threads: reader 0, iterator 0, writer 1, deleter 0
+# auto-compaction threads: 4
+block cache size: 128.00 MB
+key length: Fixed size(16) / body length: Fixed size(512)
+batch distribution: Uniform
+benchmark duration: 600 seconds
+read batch size: point Norm(3,1), range Norm(1000,100)
+write batch size: Norm(10,1)
+inside batch distribution: Uniform (-10 ~ +10, total 20)
+write ratio: 0 % (synchronous)
+insertion order: sequential fill
+
+benchmark
+opening DB instance .. 
+0.0 sec elapsed
+
+600.0 sec elapsed
+3808908 reads (6347.32 ops/sec, 157.55 us/read)
+total 3808908 operations performed
+Throughput(Benchmark) 6347.32 ops/sec
+average latency 157.546877
+
+read latency distribution
+3808908 samples (1000 Hz), average: 155.05 us
+123 us (1.00%), 130 us (5.00%), 146 us (50.00%), 245 us (95.00%), 276 us (99.00%), 674 us (99.99%)
+
+
+602.1 sec elapsed

@@ -1,0 +1,26 @@
+set terminal postscript color dashed size 6,3 enhanced font 'Helvetica,14' linewidth 1
+set output 'fig.eps'
+
+set style data histograms
+set style histogram rowstack gap 1
+set style fill pattern border -1
+set style line 2 lc rgb 'black' lt 1 lw 1
+set xtics font "Helvetica, 14"
+set grid ytics
+set yrange [0:40000000]
+set ylabel"Amplification factor" offset 1,0
+set ytics 5
+set boxwidth 0.8 relative
+
+set size 0.5,0.8
+set key samplen 1.5
+set key font "Helvetica,12"
+
+#set datafile separator ","
+
+set xtics font "Helvetica,12" offset 0,0.45
+
+plot newhistogram "Hash",\
+	'gc.data' using 2:xtic(1) ti "Data" fs pattern 3 lc rgb "#FFD700",\
+	'' using 3 ti "Mapping" fs pattern 3 lc rgb "#FFA500",\
+	'' using 4 ti "GC Valid Copy" fs pattern 3 lc rgb "#2F4F4F",\
