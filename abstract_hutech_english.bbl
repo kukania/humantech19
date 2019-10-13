@@ -1,0 +1,34 @@
+\begin{thebibliography}{1}
+
+\bibitem{kvsize}
+{\sc Atikoglu, B., Xu, Y., Frachtenberg, E., Jiang, S., and Paleczny, M.}
+\newblock {Workload Analysis of a Large-scale Key-value Store}.
+\newblock In {\em Proceedings of the ACM SIGMETRICS/PERFORMANCE Joint
+  International Conference on Measurement and Modeling of Computer Systems\/}
+  (2012), pp.~53--64.
+
+\bibitem{YCSB}
+{\sc Cooper, B.~F., Silberstein, A., Tam, E., Ramakrishnan, R., and Sears, R.}
+\newblock {Benchmarking Cloud Serving Systems with YCSB}.
+\newblock In {\em Proceedings of the ACM symposium on Cloud computing\/}
+  (2010), pp.~143--154.
+
+\bibitem{bluedbm}
+{\sc Jun, S.-W., Liu, M., Lee, S., Hicks, J., Ankcorn, J., King, M., Xu, S.,
+  and Arvind}.
+\newblock {BlueDBM: An Appliance for Big Data Analytics}.
+\newblock In {\em Proceedings of the Annual International Symposium on Computer
+  Architecture\/} (2015), pp.~1--13.
+
+\bibitem{wisckey}
+{\sc Lu, L., Pillai, T.~S., Arpaci-Dusseau, A.~C., and Arpaci-Dusseau, R.~H.}
+\newblock {WiscKey: Separating Keys from Values in SSD-conscious Storage}.
+\newblock In {\em Proceedings of the USENIX Conference on File and Storage
+  Technologies\/} (2016), pp.~133--148.
+
+\bibitem{lsm-tree}
+{\sc O’Neil, P., Cheng, E., Gawlick, D., and O’Neil, E.}
+\newblock {The Log-structured Merge-tree (LSM-tree)}.
+\newblock {\em Acta Informatica 33}, 4 (1996), 351--385.
+
+\end{thebibliography}

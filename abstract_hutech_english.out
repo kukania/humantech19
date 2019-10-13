@@ -1,0 +1,9 @@
+\BOOKMARK [1][-]{section.1}{INTRODUCTION}{}% 1
+\BOOKMARK [1][-]{section.2}{LSM-KVD}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Design of LSM-KVD}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{DRAM Requirements Comparison}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Optimizing Technics}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Memory and Performance Trade-offs}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{EXPERIMENTS}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Experimental Setup}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{YCSB}{section.3}% 9

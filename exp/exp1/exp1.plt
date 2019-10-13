@@ -1,4 +1,4 @@
-set terminal postscript color dashed size 7,3 enhanced font 'Helvetica,14' linewidth 1
+set terminal postscript color dashed size 6,2 enhanced font 'Helvetica,14' linewidth 1
 set output 'exp1.eps'
 #set multiplot layout 1,2
 #set multiplot layout 1,7 \
