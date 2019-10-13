@@ -41,11 +41,27 @@ However, if the DRAM size is not large enough to hold all the hash entries, part
 This inevitably involves expensive flash accesses to look for a key when it is not found in the DRAM-resident hash table.  
 Even worse, if a hash collision occurs then multiple flash accesses may be required, resulting in long tail latency and drop in throughput.
 
+To confirm our analysis, we carried out experiments using a KV-SSD product (3.84~TB PM983~\cite{pm983,kv-pm983}).
+We set the key size is 32 B and value size is 1 KB. And running workloads two phase, ~\texttt{load,run}. 
+In the load phase, there is only ~\texttt{SET} operation with variable working set from 1GB to 3TB.
+after the first phase, we tested ~\texttt{GET} operation for 10 minutes. 
+Figure ~\ref{fig:hash-kvssd-exp} is show the results which performance is more degraded with larger working sets.
+the reason is that hash collision and flash look-ups for mapping information stored in NAND.
+
+
 An alternative to hashing is a \emph{log-structured merge tree} (LSM-tree)~\cite{lsm-tree}. which can provide stable read latency by the level structure and write throughput.
 However, it offers bad average read performance. Also Compaction, an essential requirement of LSM-tree implementation, is problematic because it requires sorting~\cite{wisckey,blsm,silk}.
 CPU cycles for sorting can become a huge burden on embedded CPUs in SSD controllers. Extra I/O operations to keep KV pairs sorted further deteriorate I/O throughput.  
 Due to these drawbacks, LSM-tree has not been considered an attractive solution for KV-SSDs.
 
+\begin{figure}[t]
+    \centering
+    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}} 
+    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}}
+   %\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}
+    \caption{Experimental results with Block-SSD and KV-SSD}
+    \label{fig:hash-kvssd-exp}\vspace{-13pt}
+\end{figure}
 In this paper, we show that, by optimizing the LSM-tree algorithm and tightly integrating it with an SSD controller, LSM-tree-based KV-SSDs can outperform hash-based designs.  
 Our solution is based on three ideas.
 First, pin all KV indices of the top levels of the tree to DRAM to speedup reads.
@@ -57,8 +73,15 @@ We believe that our techniques can also be applied profitably to general LSM-tre
 
 Based on these ideas, we have designed a new LSM-tree-based KV-SSD, called
 \textit{\ours{}} and implemented it on an FPGA-based SSD
-platform~\cite{bluedbm}. Using micro and YCSB~\cite{ycsb} benchmarks, we have
-shown that \ours{} outperforms existing KV-SSD designs in \textcolor{red}{XX to XX on IOPS, YY on tail latency},
+platform~\cite{bluedbm}. It is well known that the LSM-tree algorithm offers an intrinsic tradeoff between
+read-latency and write-throughput, controlled by the tree height~\cite{dostoevsky,monkey}.  
+We have quantified this tradeoff and shown that for
+a given DRAM capacity an application can configure our implementation to
+support its KV performance requirements.  Alternatively, the manufacturer can
+supply more DRAM to support KV applications requiring higher performance.
+
+%Using micro and YCSB~\cite{ycsb} benchmarks, we have
+%shown that \ours{} outperforms existing KV-SSD designs in \textcolor{red}{XX to XX on IOPS, YY on tail latency},
 %including tail read-latency, average read-latency, and I/O throughput.  It is
 %well known that the LSM-tree algorithm offers an intrinsic tradeoff between
 %read-latency and write-throughput, controlled by the tree height~\cite{dostoevsky,monkey}.  We have quantified this tradeoff and shown that for
@@ -68,76 +91,74 @@ shown that \ours{} outperforms existing KV-SSD designs in \textcolor{red}{XX to 
 %For example, for a write-intensive workload, \ours{} improves throughput by
 %31\% by sacrificing average read latency by 7.4\% but with guaranteed tails.
 
-\section{MOTIVATION}
 
+%\subsection{Problems of Hash-based Design}
+%\label{sec:hash-kvssd:problem}
+%A hash-based KV-SSD maintains a hash table with many buckets in the controller DRAM, where each bucket holds metadata, \ie{} a key and a pointer, for a specific KV object in flash~\cite{nvmkv,flashstore,bluecache,kaml}.  
+%The \texttt{SET(),GET()} operations on a KV object first calculates a bucket index  using a hash function, \ie{} \texttt{index} = \texttt{hash(key)}.
+%This simple architecture offers fast response time for both operations. This simplicity and efficiency,
+%however, assume that the SSD has a large enough DRAM in its controller to hold
+%all the hash buckets.  In practice, product SSDs do not have enough DRAM.
+%Suppose that the SSD capacity is 4 TB and it has 4 GB DRAM is available for
+%indexing.  Further suppose the key and value sizes are on average 32 B and 1
+%KB, respectively~\cite{kvsize}.  If the number of buckets is $2^{32}$ (=
+%$2^{42}/2^{10}$) and the bucket size is 36 B (32 B for key and 4 B for
+%pointer), we will need 144 GB of DRAM to hold the complete hash table!
+%also using signature (16 bits)~\cite{kvsdd} instead of key can't overcome the problem. it needs 24GB memory in same setting. 
 
-\subsection{Problems of Hash-based Design}
-\label{sec:hash-kvssd:problem}
-A hash-based KV-SSD maintains a hash table with many buckets in the controller DRAM, where each bucket holds metadata, \ie{} a key and a pointer, for a specific KV object in flash~\cite{nvmkv,flashstore,bluecache,kaml}.  
-The \texttt{SET(),GET()} operations on a KV object first calculates a bucket index  using a hash function, \ie{} \texttt{index} = \texttt{hash(key)}.
-This simple architecture offers fast response time for both operations. This simplicity and efficiency,
-however, assume that the SSD has a large enough DRAM in its controller to hold
-all the hash buckets.  In practice, product SSDs do not have enough DRAM.
-Suppose that the SSD capacity is 4 TB and it has 4 GB DRAM is available for
-indexing.  Further suppose the key and value sizes are on average 32 B and 1
-KB, respectively~\cite{kvsize}.  If the number of buckets is $2^{32}$ (=
-$2^{42}/2^{10}$) and the bucket size is 36 B (32 B for key and 4 B for
-pointer), we will need 144 GB of DRAM to hold the complete hash table!
-also using signature (16 bits)~\cite{kvsdd} instead of key can't overcome the problem. it needs 24GB memory in same setting. 
-
-To run KV-SSD with limited DRAM, we can borrow an idea from demand-based FTLs~\cite{dftl} which keep only popular buckets in DRAM, while storing the rest in the flash.
-This, however, causes extra flash reads while retrieving KV objects. 
-If a designated bucket is not available in DRAM (\ie~\textit{hash-table miss}), 
-we have to fetch the bucket from the flash first to
-find the location of a desired KV object.
+%To run KV-SSD with limited DRAM, we can borrow an idea from demand-based FTLs~\cite{dftl} which keep only popular buckets in DRAM, while storing the rest in the flash.
+%This, however, causes extra flash reads while retrieving KV objects. 
+%If a designated bucket is not available in DRAM (\ie~\textit{hash-table miss}), 
+%we have to fetch the bucket from the flash first to
+%find the location of a desired KV object.
 
 
 
-\subsection{Experiments with Product KV-SSD}
-\label{sec:hash-kvssd:exp}
+%\subsection{Experiments with Product KV-SSD}
+%\label{sec:hash-kvssd:exp}
 
-\begin{figure}[t]
-    \centering
-    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}} 
-    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}}
+%\begin{figure}[t]
+%    \centering
+%    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}} 
+%    \subfloat[CDF of read latency (KV-SSD)]{\includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}}
 %   \includegraphics[width=0.24\textwidth]{exp/kvssd_latency_iops/kvssd_latency/kvssd_rlatency_trend.eps}
-    \caption{Experimental results with Block-SSD and KV-SSD}
-    \label{fig:hash-kvssd-exp}\vspace{-13pt}
-\end{figure}
-To confirm our analysis, we carried out experiments using a KV-SSD product
-(3.84~TB PM983~\cite{pm983,kv-pm983}). The internal architecture of the
-KV-SSD model is not disclosed to the public, except that it is based on
-hash-based data structures~\cite{kvssd}.
+%    \caption{Experimental results with Block-SSD and KV-SSD}
+%    \label{fig:hash-kvssd-exp}\vspace{-13pt}
+%\end{figure}
+%To confirm our analysis, we carried out experiments using a KV-SSD product
+%(3.84~TB PM983~\cite{pm983,kv-pm983}). The internal architecture of the
+%KV-SSD model is not disclosed to the public, except that it is based on
+%hash-based data structures~\cite{kvssd}.
 
-\textbf{Experimental Setup:}
-The number of KV objects stored in a KV-SSD  directly affects its performance. 
-This is because, as the number of KV objects increases, more memory is required for the hash-map, which may result in frequent signature collision and/or hash-map misses.  
-Based on this fact, we conduct experiments in two phases: \textit{load} and \textit{run}. 
-
-The load phase creates an object pool on an empty SSD by writing a bulk of KV objects.
-The default key and value sizes were 16 B and 1 KB, respectively.
-Various sizes of object pools, from 1 GB to 3 TB, were created. 
-For example, a 1GB-pool contained 1M KV objects.
-During the run phase, we executed KVBench~\cite{kvbench} on the object pools.
-KVBench generated random \texttt{GET} requests and ran for 10 minutes. 
-We measured read latency and throughput.
-When measuring read latency, the queue depth (QD) was set to 1
-to eliminate noises from queueing delays. To measure the maximum throughput the
-KV-SSD can achieve, QD was set to 64.
-
-\textbf{Result:}
-% Block-SSD average = 110 usec and consistent 
-Figures~\ref{fig:hash-kvssd-exp}(b) and (c) shows the read latency and
-throughput of the KV-SSD.  The KV-SSD showed inconsistent read response times
-as the number of objects stored got larger.  In particular, the average read
-latency increased  from 149.49 $\mu$s to 245.31 $\mu$s (1.64X), when the object
-pool-size was increased from 1~GB to 3~TB.  We also observed very long tail
-latency.  For the 99.99th percentile, the KV-SSD tail latency increased from
-323 $\mu$s to 1020 $\mu$s when object pool was increased from 1 TB to 3 TB.
-Even worse, as depicted in Figure~\ref{fig:hash-kvssd-exp}(c), the read
-throughput continued to drop as the object pool size got larger, for example,
-from 112 KIOPS to 64 KIOPS.
-
+%\textbf{Experimental Setup:}
+%The number of KV objects stored in a KV-SSD  directly affects its performance. 
+%This is because, as the number of KV objects increases, more memory is required for the hash-map, which may result in frequent signature collision and/or hash-map misses. % 
+%Based on this fact, we conduct experiments in two phases: \textit{load} and \textit{run}. 
+%
+%The load phase creates an object pool on an empty SSD by writing a bulk of KV objects.
+%The default key and value sizes were 16 B and 1 KB, respectively.
+%Various sizes of object pools, from 1 GB to 3 TB, were created. 
+%%%%For example, a 1GB-pool contained 1M KV objects.
+%During the run phase, we executed KVBench~\cite{kvbench} on the object pools.
+%KVBench generated random \texttt{GET} requests and ran for 10 minutes. 
+%We measured read latency and throughput.
+%When measuring read latency, the queue depth (QD) was set to 1
+%to eliminate noises from queueing delays. To measure the maximum throughput the
+%KV-SSD can achieve, QD was set to 64.
+%
+%\textbf{Result:}
+%% Block-SSD average = 110 usec and consistent 
+%Figures~\ref{fig:hash-kvssd-exp}(b) and (c) shows the read latency and
+%throughput of the KV-SSD.  The KV-SSD showed inconsistent read response times
+%as the number of objects stored got larger.  In particular, the average read
+%latency increased  from 149.49 $\mu$s to 245.31 $\mu$s (1.64X), when the object
+%pool-size was increased from 1~GB to 3~TB.  We also observed very long tail
+%latency.  For the 99.99th percentile, the KV-SSD tail latency increased from
+%323 $\mu$s to 1020 $\mu$s when object pool was increased from 1 TB to 3 TB.
+%Even worse, as depicted in Figure~\ref{fig:hash-kvssd-exp}(c), the read
+%throughput continued to drop as the object pool size got larger, for example,
+%from 112 KIOPS to 64 KIOPS.
+%
 \section{\ours{}}
 \begin{figure}[h]
 	\centering
@@ -168,26 +189,28 @@ entry also contains the start key (a variable size from 16 B to 128 B) of the me
 Figure~\ref{fig:overall} illustrates examples of how the level lists point to
 meta segments which, in turn, point to actual values.
 
-\textbf{DRAM Requirement for Level Lists:}
-Let's estimate DRAM requirement of~\ours{}.  We assume that an
-SSD capacity is 4 TB and each meta segment is 32 KB. First 
-consider the case where the average sizes of keys and values are 32 B and 1 KB,
+\subsection{DRAM Requirements Comparison}
+%\textbf{DRAM Requirement for Level Lists:}
+Let's estimate DRAM requirement of~\ours{} and Hash-based KV-SSD.
+We assume that an SSD capacity is 4 TB and each meta segment is 32 KB. 
+First consider the case where the average sizes of keys and values are 32 B and 1 KB,
 respectively~\cite{kvsize}. In this case only 162 MB DRAM is needed to hold all the level lists.
-For the
-worst-case scenario, where all the objects have the maximum key size of 128 B,
-the level lists would require about 2.1 GB DRAM.  This can still easily fit in
-4 GB DRAM that 4 TB SSD has for mapping.
+For the worst-case scenario, where all the objects have the maximum key size of 128 B,
+the level lists would require about 2.1 GB DRAM. 
+This can still easily fit in 4 GB DRAM that 4 TB SSD has for mapping.
+
+However, in case of Hash-based one, it needed at least \todo{XX} in 32B key and 1KB value setting.
+To reduce DRAM size it can use signature instead of key ~\cite{bluedbm,kaml}. 
+Although it reduces the DRAM requirements, this design isn't enough to fit caching all mapping ~\ie{XX DRAM with 16 bits signature}.
+And also occur another collision ~\ie{differents two keys with same signature}.
+
 
 \subsection{Optimizing Technics}
-\textbf{Optimizing read Latency:}
-Retrieving a KV object from \ours{} requires multiple flash lookups. 
-\ours{} first looks up the
-skiplist ($L_0$). If a matched one is not found, it has to go down to
-$L_1$. \ours{} looks up the $L_1$ level list to get the location of a meta
-segment that \textit{may} have an index for a desired KV object. If $L_1$ doesn't have the target key mapping, it is going down to the next level. Finally at most N (\# of Levels) look up is needed for getting a KV objects.
 
-To reduce these look up costs, \ours{} adopts aggressive strategy: \textit{level pinning}.  If the LSM-tree has $n$
-levels, \ours{} keeps meta segments for top-$k$ levels ($k \le n-1$) in DRAM.
+\textbf{Optimizing read Latency:}
+Because ~\ours{}'s DRAM requirements is smaller than given DRAM.
+It can adopt aggressive strategy: \textit{level pinning}. 
+If the LSM-tree has $n$ levels, \ours{} keeps meta segments for top-$k$ levels ($k \le n-1$) in DRAM.
 To process a \texttt{GET} request, it first searches for a key in top-$k$
 levels in DRAM.  Only when a key is not found there, it lookups the rest
 of levels resident in the flash.  With the level pinning, the number of the
