@@ -15,7 +15,7 @@
 	\fontsize{20}{0}\selectfont{\textbf{~\ours{}: LSM-tree based Key-Value SSD}}
 	\vspace{32pt}\par
 	\fontsize{10}{12}\selectfont{\textbf{(Abstract) This is a template of Extended Abstract for HumanTech Paper Award. The recommended volume is 2 pages with 2-column format. Titles do not exceed two lines and abstracts do not exceed 15 lines.\\
-		Papers should be written in Times New Roman font with the font size of 20pt in bold for the title, 10pt in bold for abstracts, 11pt in bold for the titles within text, 10pt for the text, 9pt in bold for the titles of figures and tables and 9pt for the references. For the fairness of the review, Name, major, the school/university name, the school/university logo, and teacher/professors name of author should not be included in the abstract and paper.
+		papers should be written in Times New Roman font with the font size of 20pt in bold for the title, 10pt in bold for abstracts, 11pt in bold for the titles within text, 10pt for the text, 9pt in bold for the titles of figures and tables and 9pt for the references. For the fairness of the review, Name, major, the school/university name, the school/university logo, and teacher/professors name of author should not be included in the abstract and paper.
 	}}
 \end{flushleft}
 \vspace{20pt}
@@ -25,7 +25,7 @@
 \section{INTRODUCTION}
 \vspace{-5pt}
 Key-Value store (KVS) has become a necessary infrastructure for many applications, such as caching, web indexing, and storage systems\iffalse cite{memcached,tao,bigtable,dynamo}\fi.  
-Owing to its popularity and huge impact on application performance, serious efforts have been made to optimize KVS at various ways.  
+Owing to its popularity and huge impact on application performance, serious efforts have been made to optimize KVS in various ways.  
 Recently, offloading most of the key-value (KV) functionality onto a storage device has been suggested, the so-called KV-SSD\iffalse ~\cite{kvssd,kaml,nvmkv,bluecache}\fi.  
 By making the storage hardware directly serve KV requests via a driver, KV-SSDs enable clients to bypass the deep software stack in the host.
 For example, by performing most commonly used operations of KV databases, such as RocksDB\iffalse ~\cite{rocksdb}\fi, 
@@ -44,9 +44,11 @@ Even worse, if a hash collision occurs then multiple flash accesses may be requi
 %the reason is that hash collision and flash look-ups for mapping information stored in NAND.
 
 An alternative to hashing is a \emph{log-structured merge tree} (LSM-tree)~\cite{lsm-tree} which can be widely used for KV-store.
-However, it has not only bad average read performance, but also another overheads for write whic is compaction. 
-it is an essential requirement of LSM-tree implementation, is problematic because it requires sorting~\cite{wisckey}.
-CPU cycles for sorting can become a huge burden on embedded CPUs in SSD controllers. Extra I/O operations to keep KV pairs sorted further deteriorate I/O throughput.  
+However, it has not only bad average read performance, 
+but also addtional overheads for the writing compaction.
+Since one of its processes is sorting~\cite{wisckey} keys, 
+CPU cycles can become a huge burden on embedded CPUs in SSD controllers. 
+Also extra I/O operations to keep KV pairs sorted further deteriorate I/O throughput.  
 Due to these drawbacks, LSM-tree has not been considered an attractive solution for KV-SSDs.
 
 %\begin{figure}[t]
@@ -66,7 +68,7 @@ Second, run sorting tasks using HW accelerators, in parallel with I/O tasks to e
 Third, combine level-pinning with key-value separation~\cite{wisckey} to reduce I/O overheads for compaction.
 Collectively these techniques remove the compaction bottleneck and provide high write-throughput.
 
-Additionally,Thanks to the first idea, we can extend design space of LSM-tree-based KV-SSD by using trade-off between DRAM requirements and the performance.
+Additionally, due to the first idea, we can extend the design space of LSM-tree-based KV-SSD by using trade-off between DRAM requirements and the performance.
 We believe that our techniques can also be applied profitably to general LSM-tree implementations, which may not have the same resource constraints as KV-SSDs do.
 
 %Based on these ideas, we have designed a new LSM-tree-based KV-SSD, called
@@ -94,7 +96,7 @@ which all reside in flash. The skiplist corresponds to $L_0$ in the LSM-tree alg
 objects as large as enough to fully utilize the parallelism of a NAND chip
 array.  Each skiplist entry has four fields: <key size, key, value size,
 value>, and the skiplist is kept sorted by the keys. 
-When the skiplist is full, it flush all KV pairs to data segments and make new meta segment for flushed KV objects.
+When the skiplist is full, it flush all KV pairs in skiplist into data segments and make a new meta segment for the flushed KV objects.
 The new meta segment is also written into the flash, and inserted into $L_1$ \textit{level list}.
 
 \textit{level list} keeps track of meta segments at every level in the flash, Each level list is an array of pointers(4B each)
@@ -102,7 +104,7 @@ to meta segments belonging to the level.
 Each array entry also contains the start key (a variable size from 16B to 128B) of the meta segment to facilitate searching.
 Figure~\ref{fig:overall} illustrates examples of how the level lists point to 
 meta segments which, in turn, point to actual values.
-when specific level list is full, the level list compacts with below level list.
+when a specific level({$L_n$}) list is full, the level list compacts with below level({$L_{n+1}$}) list and becomes a new lower level({$L_{n+1}$}).
 %In our design, each meta segment belongs to one of the levels in the tree.
 %\ours{} maintains another in-memory data structure, \textit{level lists}, which
 %keeps track of meta segments at every level in the flash.  Each level list is
@@ -113,7 +115,7 @@ when specific level list is full, the level list compacts with below level list.
 
 \vspace{-5pt}
 \subsection{DRAM Requirements Comparison}\vspace{-5pt}
-Let's estimate DRAM requirement of~\ours{} and Hash-based KV-SSD.
+Let's estimate DRAM requirements of~\ours{} and Hash-based KV-SSD.
 We assume that an SSD capacity is 4 TB and each meta segment is 32 KB.
 First consider the case where the average sizes of keys and values are 32 B and 1 KB,
 respectively~\cite{kvsize}. In this case only 162 MB DRAM is needed to hold all the level lists.
@@ -121,16 +123,17 @@ For the worst-case scenario, where all the objects have the maximum key size of 
 the level lists would require about 2.1 GB DRAM. 
 This can still easily fit in 4 GB DRAM that 4 TB SSD has for mapping.
 
-However, in case of Hash-based one, it needed at least 144GB DRAM in 32B key and 1KB value setting.
+However, in case of Hash-based one, it needed at least 144GB DRAM in 32B keys and 1KB values setting.
 To reduce DRAM size, some use signature instead of key ~\cite{bluedbm} by hashing its key.
-Although it reduces the DRAM requirements to 24GB which is calculated when its signature size is 2B, this design isn't enough to fit caching all mapping.
-And it also occur another types of collision ~\ie{Differents two keys can have a same signature}.
+Although it reduces the DRAM requirements to 24GB which is calculated when its each signature size is 2B, it is too huge to fit caching all the mapping.
+It means that even using the signature design it should store some part of the mapping in flash chips.
+And it also occur another type of collision ~\ie{the different two keys can have a same signature}.
 
 
 \vspace{-5pt}
 \subsection{Optimizing Technics}\vspace{-5pt}
 \textbf{Optimizing Read Latency:}
-Traditional LSM-tree uses bloom filter for optimizing read. 
+The traditional LSM-tree uses bloom filter for optimizing read. 
 But ~\ours{} adopts more aggressive strategy: \textit{level pinning}. 
 If the LSM-tree has $n$ levels, \ours{} keeps meta segments for top-$k$ levels ($k \le n-1$) in DRAM.
 To process a \texttt{GET} request, it first searches for a key in top-$k$
@@ -140,7 +143,7 @@ of levels resident in the flash.
 
 \textbf{Optimizing Compaction:}
 To keep each level sorted, \ours{} performs compaction which involves extra I/Os and CPU cycles.
-By using \textit{level pinning} techning and seperating keys from values{~\cite{wisckey}}, it can reduce I/O traffics in compaction phase. 
+By using \textit{level pinning} and seperating keys from values{~\cite{wisckey}}, it can reduce I/O traffics in compaction phase. 
 However, The sorting overhead of compaction is pretty huge on embedded system. 
 We address this problem by offloading sorting tasks to a special hardware accelerator in the SSD controller.
 

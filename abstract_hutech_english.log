@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.5.19)  13 OCT 2019 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.5.19)  14 OCT 2019 11:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -999,7 +999,7 @@ Package epstopdf Info: Source file: <fig/fig3.eps>
 (epstopdf)                    size: 21824 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/fig3-eps-converted-to.
 pdf fig/fig3.eps>
-(epstopdf)             \includegraphics on input line 85.
+(epstopdf)             \includegraphics on input line 87.
 Package epstopdf Info: Output file is already uptodate.
 
 
@@ -1008,57 +1008,53 @@ pdfTeX warning: pdflatex (file ./fig/fig3-eps-converted-to.pdf): PDF inclusion:
 <fig/fig3-eps-converted-to.pdf, id=43, 414.54875pt x 238.8925pt>
 File: fig/fig3-eps-converted-to.pdf Graphic file (type pdf)
 <use fig/fig3-eps-converted-to.pdf>
-Package pdftex.def Info: fig/fig3-eps-converted-to.pdf  used on input line 85.
+Package pdftex.def Info: fig/fig3-eps-converted-to.pdf  used on input line 87.
 (pdftex.def)             Requested size: 197.49464pt x 113.81102pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 86.
-LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 93
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 88.
+LaTeX Font Info:    Try loading font information for OT1+ztmcm on input line 95
 .
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
 File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 93
+LaTeX Font Info:    Try loading font information for OML+ztmcm on input line 95
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omlztmcm.fd
 File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 93
+LaTeX Font Info:    Try loading font information for OMS+ztmcm on input line 95
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsztmcm.fd
 File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 93
+LaTeX Font Info:    Try loading font information for OMX+ztmcm on input line 95
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omxztmcm.fd
 File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 93.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 95.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 93.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 95.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 93.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 95.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 93.
-
-Underfull \hbox (badness 1286) in paragraph at lines 116--123
-[]\T1/ptm/m/n/10 Let's es-ti-mate DRAM re-quire-ment of LSM-KVD and
- []
-
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 95.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 123.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 123.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 123.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 123.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 125.
+
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 13.28233pt.
@@ -1069,7 +1065,7 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 
  <./fig/fig3-eps-converted-to.pdf>]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 136.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 139.
 
  (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
@@ -1082,20 +1078,20 @@ Package epstopdf Info: Source file: <./exp/exp1/exp1.eps>
 (epstopdf)                    size: 7500 bytes
 (epstopdf)             Command: <repstopdf --outfile=./exp/exp1/exp1-eps-conver
 ted-to.pdf ./exp/exp1/exp1.eps>
-(epstopdf)             \includegraphics on input line 173.
+(epstopdf)             \includegraphics on input line 176.
 Package epstopdf Info: Output file is already uptodate.
 
 
 pdfTeX warning: pdflatex (file ./exp/exp1/exp1-eps-converted-to.pdf): PDF inclu
 sion: found PDF version <1.7>, but at most version <1.5> allowed
-<./exp/exp1/exp1-eps-converted-to.pdf, id=78, 144.54pt x 433.62pt>
+<./exp/exp1/exp1-eps-converted-to.pdf, id=79, 144.54pt x 433.62pt>
 File: ./exp/exp1/exp1-eps-converted-to.pdf Graphic file (type pdf)
 <use ./exp/exp1/exp1-eps-converted-to.pdf>
 Package pdftex.def Info: ./exp/exp1/exp1-eps-converted-to.pdf  used on input li
-ne 173.
+ne 176.
 (pdftex.def)             Requested size: 75.8736pt x 227.62204pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 173.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 176.
 Package epstopdf Info: Source file: <./exp/exp2/exp2.eps>
 (epstopdf)                    date: 2019-10-13 16:04:22
 (epstopdf)                    size: 59471 bytes
@@ -1104,20 +1100,20 @@ Package epstopdf Info: Source file: <./exp/exp2/exp2.eps>
 (epstopdf)                    size: 23658 bytes
 (epstopdf)             Command: <repstopdf --outfile=./exp/exp2/exp2-eps-conver
 ted-to.pdf ./exp/exp2/exp2.eps>
-(epstopdf)             \includegraphics on input line 174.
+(epstopdf)             \includegraphics on input line 177.
 Package epstopdf Info: Output file is already uptodate.
 
 
 pdfTeX warning: pdflatex (file ./exp/exp2/exp2-eps-converted-to.pdf): PDF inclu
 sion: found PDF version <1.7>, but at most version <1.5> allowed
-<./exp/exp2/exp2-eps-converted-to.pdf, id=79, 266.9975pt x 578.16pt>
+<./exp/exp2/exp2-eps-converted-to.pdf, id=80, 266.9975pt x 578.16pt>
 File: ./exp/exp2/exp2-eps-converted-to.pdf Graphic file (type pdf)
 <use ./exp/exp2/exp2-eps-converted-to.pdf>
 Package pdftex.def Info: ./exp/exp2/exp2-eps-converted-to.pdf  used on input li
-ne 174.
+ne 177.
 (pdftex.def)             Requested size: 105.11452pt x 227.62204pt.
 
-Underfull \hbox (badness 1168) in paragraph at lines 189--195
+Underfull \hbox (badness 1168) in paragraph at lines 192--198
 \T1/ptm/m/n/10 KVD out-per-formed the hash-based ones, pro-vid-ing 47%
  []
 
@@ -1135,14 +1131,14 @@ Underfull \hbox (badness 1400) in paragraph at lines 24--28
 Package caption Warning: Unused \captionsetup[table] on input line 112.
 See the caption package documentation for explanation.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 208.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 211.
 [3
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 208.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 211.
  (./abstract_hutech_english.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 208.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 208.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 211.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 211.
 Package rerunfilecheck Info: File `abstract_hutech_english.out' has not changed
 .
 (rerunfilecheck)             Checksum: F3AFCE779F3954C4843B0DFADE4701FB;548.
@@ -1150,7 +1146,7 @@ Package rerunfilecheck Info: File `abstract_hutech_english.out' has not changed
 Here is how much of TeX's memory you used:
  10754 strings out of 492982
  153238 string characters out of 6134896
- 265695 words of memory out of 5000000
+ 264695 words of memory out of 5000000
  14049 multiletter control sequences out of 15000+600000
  80278 words of font info for 126 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1164,7 +1160,7 @@ b></usr/share/texlive/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/times/utmri8a.pfb>
-Output written on abstract_hutech_english.pdf (3 pages, 150650 bytes).
+Output written on abstract_hutech_english.pdf (3 pages, 150972 bytes).
 PDF statistics:
  148 PDF objects out of 1000 (max. 8388607)
  119 compressed objects within 2 object streams
