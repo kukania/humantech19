@@ -45,9 +45,9 @@ Even worse, if a hash collision occurs then multiple flash accesses may be requi
 
 An alternative to hashing is a \emph{log-structured merge tree} (LSM-tree)~\cite{lsm-tree} which can be widely used for KV-store.
 However, it has not only bad average read performance, 
-but also addtional overheads for the writing compaction.
-Since one of its processes is sorting~\cite{wisckey} keys, 
-CPU cycles can become a huge burden on embedded CPUs in SSD controllers. 
+but also additional overheads for the writing called compaction.
+Since the compaction requires sorting keys which is a CPU-intensive job,
+it can become a huge burden on embedded CPUs in SSD controllers. 
 Also extra I/O operations to keep KV pairs sorted further deteriorate I/O throughput.  
 Due to these drawbacks, LSM-tree has not been considered an attractive solution for KV-SSDs.
 
@@ -165,8 +165,10 @@ Thus, by using two parameters, We can more easily design ~\ours{} to fit DRAM si
 We implemented the \ours{} software and hardware accelerator on our FPGA-based
 SSD platform that has a quad-core ARM Cortex-A53 CPU running at 1.2 GHz with 16 GB
 DRAM. This hardware specification is almost equivalent to those of recent SSDs.
+And we scaled down the SSDs capacity to 64GB which is originally 256GB. Available DRAM for KV indexing was set to 64MB.
 
-For realistic experiments, We implemented the hash-based KVSSD using 8 bits signature. It makes more entries caching.
+For realistic experiments, We implemented the hash-based KVSSD using 8-bit signature,
+which is sufficient to cache entries.
 And \ours{} is pinning top 3 levels among the total 5 levels.
 To confirm effect of the HW-accelerator, We tested two diffrent versions of \ours.
 One is \texttt{LSM-KVD}, another is \texttt{LSM-KVD+} which adopt the HW-accelerator
@@ -176,7 +178,7 @@ One is \texttt{LSM-KVD}, another is \texttt{LSM-KVD+} which adopt the HW-acceler
 	\subfloat[IOPS]{\includegraphics[height=8cm,angle=-90]{./exp/exp1/exp1.eps}}\vspace{-13pt}
 	\subfloat[CDF of read latency]{\includegraphics[height=8cm,angle=-90]{./exp/exp2/exp2.eps}}\vspace{2pt}
 	\caption{
-	\TODO{Throughput comparison of Hash-based KV-SSD and \ours{}}
+	\TODO{YCSB results of Hash-based KV-SSD and \ours{}}
 	}
 	\label{fig:result}
 	\vspace{-17pt}
@@ -184,22 +186,24 @@ One is \texttt{LSM-KVD}, another is \texttt{LSM-KVD+} which adopt the HW-acceler
 
 \vspace{-10pt}
 \subsection{YCSB}\vspace{-5pt}
-We measured IOPS and read latency of the hash-based KV-SSDs and \ours{} while running YCSB.
-YCSB has variable workloads with read,write ratio and workload pattern. Please see~\cite{YCSB} for workloads details.
+We measured IOPS and read latency of the hash-based KV-SSDs and \ours{} while running YCSB with 32B keys and 1KB values setting.
+YCSB has variable workloads on read,write ratio and workload pattern. Please see~\cite{YCSB} for workloads details.
 %\todo{explanation of A,C,D,E workloads}.
 
 
 \textbf{IOPS:}
 Figure~\ref{fig:result} (a) shows IOPS result of YCSB.
 \ours{} outperformed the
-hash-based ones, providing 47\% higher IOPS, on average. Particularly, for
-YCSB-E with range queries, \ours{} showed 71$\sim$111\% higher IOPS thanks to
-LSM-tree's sorted nature. 
+hash-based ones, providing 47\% higher IOPS, on average.
+And thanks to the HW-accelerator, \texttt{LSM-KVD+} has better performance than \texttt{LSM-KVD} on all workloads including \texttt{SET} operation.
 
+% Particularly, for
+%YCSB-E with range queries, \ours{} showed 71$\sim$111\% higher IOPS thanks to
+%LSM-tree's sorted nature. 
 %In case of YCSB-C, Because \ours{} doesn't have any cache mechanism, It is weak when the workload has read after read the same key. 
 %But In case of YCSB-D, otherwise, it performed very well because the workload's pattern is read after write same key. Almost keys were hitted in level pinning.
 %
-%And thanks to the HW-accelerator, \texttt{LSM-KVD+} has better performanc than \texttt{LSM-KVD} on all workloads including \texttt{SET} operation.
+
 \textbf{Read Latency:}
 Figure~\ref{fig:result} (b) shows CDF graphs of read response times of all three types of KVSSD from 95\% to 99.99\%.
 \texttt{Hash} was suffer collision on all workloads. 
